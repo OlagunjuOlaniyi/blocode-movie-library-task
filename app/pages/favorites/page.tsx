@@ -33,7 +33,7 @@ const FavoritesPage = () => {
               key={movie.id}
               className="border p-2 rounded shadow-md hover:shadow-lg transition-shadow"
             >
-              <Link href={`/movie/${movie.id}`}>
+              <Link href={`/pages/movie/${movie.id}`}>
                 <div>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
