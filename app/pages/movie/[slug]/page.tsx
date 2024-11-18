@@ -1,10 +1,16 @@
+"use client";
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { fetchMovieDetails } from "../../api/tmdb";
+import { fetchMovieDetails } from "../../../api/tmdb";
+import { useParams } from "next/navigation";
 
 const MovieDetails = () => {
-  const router = useRouter();
-  const { id } = router.query;
+  //   const router = useRouter();
+  //   const { id } = router.query;
+
+  const params = useParams();
+  const id = params.slug;
   const [movie, setMovie] = useState<any>(null);
 
   useEffect(() => {
