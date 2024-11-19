@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchPopularMovies } from "../app/api/tmdb";
+import { fetchPopularMovies } from "./api/tmdb";
 import Link from "next/link";
 
-export default function Home({ initialMovies }: { initialMovies: any[] }) {
-  const [movies, setMovies] = useState(initialMovies || []);
+export default function Home() {
+  const [movies, setMovies] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [favoriteCount, setFavoriteCount] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
 
   const loadMovies = async () => {
@@ -17,7 +17,7 @@ export default function Home({ initialMovies }: { initialMovies: any[] }) {
     setIsLoading(true);
     try {
       const data = await fetchPopularMovies(currentPage);
-      setMovies((prevMovies) => [...prevMovies, ...data]);
+      setMovies((prevMovies: any) => [...prevMovies, ...data]);
       setCurrentPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -28,7 +28,7 @@ export default function Home({ initialMovies }: { initialMovies: any[] }) {
   // Initial load
   useEffect(() => {
     loadMovies();
-  }, []);
+  }, [loadMovies]);
 
   // Infinite scrolling
   useEffect(() => {
@@ -117,8 +117,8 @@ export default function Home({ initialMovies }: { initialMovies: any[] }) {
         </Link>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
-        {filteredMovies.map((movie: any) => (
-          <div className="flex flex-col">
+        {filteredMovies.map((movie: any, number: number) => (
+          <div className="flex flex-col" key={number}>
             <Link key={movie.id} href={`/pages/movie/${movie.id}`}>
               <div className="block border p-2 rounded shadow-md hover:shadow-lg transition-shadow">
                 <img
