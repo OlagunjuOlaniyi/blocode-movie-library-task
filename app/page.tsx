@@ -4,18 +4,47 @@ import { useState, useEffect } from "react";
 import { fetchPopularMovies } from "../app/api/tmdb";
 import Link from "next/link";
 
-export default function Home() {
-  const [movies, setMovies] = useState([]);
+export default function Home({ initialMovies }: { initialMovies: any[] }) {
+  const [movies, setMovies] = useState(initialMovies || []);
   const [searchTerm, setSearchTerm] = useState("");
   const [favoriteCount, setFavoriteCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const loadMovies = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const data = await fetchPopularMovies(currentPage);
+      setMovies((prevMovies) => [...prevMovies, ...data]);
+      setCurrentPage((prevPage) => prevPage + 1);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
+    setIsLoading(false);
+  };
+
+  // Initial load
   useEffect(() => {
-    const loadMovies = async () => {
-      const data = await fetchPopularMovies();
-      setMovies(data);
-    };
     loadMovies();
   }, []);
+
+  // Infinite scrolling
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition =
+        window.innerHeight + document.documentElement.scrollTop;
+      const threshold = document.documentElement.offsetHeight - 100;
+
+      if (scrollPosition >= threshold && !isLoading) {
+        loadMovies();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading, currentPage]);
 
   // Add to favorite function
 
@@ -40,7 +69,6 @@ export default function Home() {
     }
   };
 
-  
   // Update favorite count from localStorage
 
   useEffect(() => {
@@ -112,6 +140,7 @@ export default function Home() {
           </div>
         ))}
       </div>
+      {isLoading && <p className="text-center mt-4">Loading more movies...</p>}
     </div>
   );
 }
