@@ -1,29 +1,38 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchPopularMovies } from "./api/tmdb";
 import Link from "next/link";
+import Image from "next/image";
+
+interface Movie {
+  id: number;
+  title: string;
+  release_date: string;
+  vote_average: number;
+  poster_path: string;
+}
 
 export default function Home() {
-  const [movies, setMovies] = useState<any>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [favoriteCount, setFavoriteCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const loadMovies = async () => {
+  const loadMovies = useCallback(async () => {
     if (isLoading) return;
 
     setIsLoading(true);
     try {
       const data = await fetchPopularMovies(currentPage);
-      setMovies((prevMovies: any) => [...prevMovies, ...data]);
+      setMovies((prevMovies) => [...prevMovies, ...data]);
       setCurrentPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error("Error fetching movies:", error);
     }
     setIsLoading(false);
-  };
+  }, [currentPage, isLoading]);
 
   // Initial load
   useEffect(() => {
@@ -31,29 +40,29 @@ export default function Home() {
   }, [loadMovies]);
 
   // Infinite scrolling
+  const handleScroll = useCallback(() => {
+    const scrollPosition =
+      window.innerHeight + document.documentElement.scrollTop;
+    const threshold = document.documentElement.offsetHeight - 100;
+
+    if (scrollPosition >= threshold && !isLoading) {
+      loadMovies();
+    }
+  }, [isLoading, loadMovies]);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition =
-        window.innerHeight + document.documentElement.scrollTop;
-      const threshold = document.documentElement.offsetHeight - 100;
-
-      if (scrollPosition >= threshold && !isLoading) {
-        loadMovies();
-      }
-    };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading, currentPage]);
+  }, [handleScroll]);
 
   // Add to favorite function
 
-  const addToFavorites = (movie: any) => {
+  const addToFavorites = (movie: Movie) => {
     const existingFavorites = JSON.parse(
       localStorage.getItem("favorites") || "[]"
     );
     const isAlreadyFavorite = existingFavorites.some(
-      (fav: any) => fav.id === movie.id
+      (fav: Movie) => fav.id === movie.id
     );
 
     if (!isAlreadyFavorite) {
@@ -93,7 +102,7 @@ export default function Home() {
 
   // Search functionality
 
-  const filteredMovies = movies.filter((movie: any) =>
+  const filteredMovies = movies.filter((movie: Movie) =>
     movie.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -117,13 +126,17 @@ export default function Home() {
         </Link>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
-        {filteredMovies.map((movie: any, number: number) => (
-          <div className="flex flex-col" key={number}>
-            <Link key={movie.id} href={`/pages/movie/${movie.id}`}>
+        {filteredMovies.map((movie: Movie) => (
+          <div className="flex flex-col" key={movie.id}>
+            <Link href={`/pages/movie/${movie.id}`}>
               <div className="block border p-2 rounded shadow-md hover:shadow-lg transition-shadow">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
+                <Image
+                  src={`https://image.tmdb.org/t/p/w500${
+                    movie.poster_path || ""
+                  }`}
+                  width={500} 
+                  height={750}
+                  alt={movie.title || "No Title"}
                   className="w-full h-auto"
                 />
                 <h2 className="text-lg font-semibold mt-2">{movie.title}</h2>

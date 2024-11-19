@@ -2,9 +2,17 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+
+interface Movie {
+  id: number;
+  title: string;
+  release_date: string;
+  poster_path: string;
+}
 
 const FavoritesPage = () => {
-  const [favorites, setFavorites] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<Movie[]>([]);
 
   // Load favorites from localStorage on component mount
   useEffect(() => {
@@ -35,9 +43,11 @@ const FavoritesPage = () => {
             >
               <Link href={`/pages/movie/${movie.id}`}>
                 <div>
-                  <img
+                  <Image
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     alt={movie.title}
+                    width={500}
+                    height={750}
                     className="w-full h-auto"
                   />
                   <h2 className="text-lg font-semibold mt-2">{movie.title}</h2>

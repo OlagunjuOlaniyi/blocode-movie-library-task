@@ -3,11 +3,25 @@
 import { useEffect, useState } from "react";
 import { fetchMovieDetails } from "../../../api/tmdb";
 import { useParams } from "next/navigation";
+import Image from "next/image";
+
+interface Genre {
+  id: number;
+  name: string;
+}
+
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  overview: string;
+  genres: Genre[];
+}
 
 const MovieDetails = () => {
   const params = useParams();
   const id = params.slug;
-  const [movie, setMovie] = useState<any>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -21,12 +35,12 @@ const MovieDetails = () => {
 
   // Add to favorite function
 
-  const addToFavorites = (movie: any) => {
+  const addToFavorites = (movie: Movie) => {
     const existingFavorites = JSON.parse(
       localStorage.getItem("favorites") || "[]"
     );
     const isAlreadyFavorite = existingFavorites.some(
-      (fav: any) => fav.id === movie.id
+      (fav: Movie) => fav.id === movie.id
     );
 
     if (!isAlreadyFavorite) {
@@ -48,9 +62,11 @@ const MovieDetails = () => {
     <div>
       <div className="p-4 flex flex-col lg:flex-row gap-4 items-center">
         <div className="flex flex-col">
-          <img
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-            alt={movie.title}
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}` || ""}
+            alt={movie.title || "No Title"}
+            width={300}
+            height={450}
             className="min-w-[300px] h-auto"
           />
           <button
@@ -64,15 +80,17 @@ const MovieDetails = () => {
           <h1 className="text-3xl font-bold">{movie.title}</h1>
           <p>{movie.overview}</p>
           <p className="text-sm">
-            Genres: {movie.genres.map((genre: any) => genre.name).join(", ")}
+            Genres: {movie.genres.map((genre: Genre) => genre.name).join(", ")}
           </p>
         </div>
       </div>
 
       <div className="mt-[50px] flex justify-center">
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
+        <Image
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}` || ""}
+          alt={movie.title || "No Title"}
+          width={1000}
+          height={1500}
           className="lg:w-[60%] h-auto"
         />
       </div>
