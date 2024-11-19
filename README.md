@@ -1,8 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a project build with [Next.js](https://nextjs.org)
 
 ## Getting Started
 
-First, run the development server:
+Firstly, this project can be clone from the github link below:
+
+https://github.com/OlagunjuOlaniyi/blocode-movie-library-task.git
+
+Secondly, to install the depencies use:
+
+```bash
+npm
+# or
+yarn
+```
+
+Thirdly, to run the development server:
 
 ```bash
 npm run dev
@@ -16,21 +28,27 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+A build up of the project can acheived by running thus:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+# or
+yarn build
 
-## Learn More
+```
 
-To learn more about Next.js, take a look at the following resources:
+This project also consumes 2 endpoint from the api below:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+https://api.themoviedb.org/3
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Design Choice
 
-## Deploy on Vercel
+1. The design choice was inspired by love for dark screen. Hence the major color of the project circle around Black and White Coloration.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. The movie grid was inspired by my earlier personal project on a clone of Amazon website. Thus the grid layout is flexible and accommodates any screen sizes.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Movie details design was inspired by this website (https://fmoviesti.top/movie/)
+
+## Deployed on Netlify
+
+https://olaniyi-blocode-task.netlify.app/
