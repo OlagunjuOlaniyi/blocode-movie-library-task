@@ -51,4 +51,4 @@ https://api.themoviedb.org/3
 
 ## Deployed on Netlify
 
-https://olaniyi-blocode-task.netlify.app/
+https://olaniyi-bloocode-task.netlify.app/
